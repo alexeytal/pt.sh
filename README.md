@@ -1,11 +1,11 @@
-# pt.sh - cli periodic table with search and detailed cards for each element
+# pt.sh - cli periodic table
 
 [![asciicast](https://asciinema.org/a/517219.svg)](https://asciinema.org/a/517219)
 
 # Features
 - searchable
 - info cards with lots of properties for every element
-- info cards are stored in csv format and can be easily extended by adding more columns/properties
+- info cards are stored in csv format and can be easily extended by adding more columns
 
 # Installation
 Copy the data file to $XDG_DATA_HOME/pt.sh
