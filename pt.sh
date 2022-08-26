@@ -1,6 +1,7 @@
 #!/bin/bash
 
-datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
+#datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
+[ -f ./pt.csv ] && datafile="pt.csv" || datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
 export GREP_COLORS='ms=1;33;30;48;5;10'
 
 table="    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  
