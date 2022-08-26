@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
 export GREP_COLORS='ms=1;33;30;48;5;10'
