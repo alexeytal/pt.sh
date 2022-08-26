@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
 [ -f ./pt.csv ] && datafile="pt.csv" || datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
@@ -49,7 +49,7 @@ tm(){
   Tc Ru Rh Pd Ag Cd La Hf Ta W Re Os Ir Pt Au Hg Ac \
   Rf Db Sg Bh Hs Mt Ds Rg Cn "
 
-  echo -e "$table" | grep --color -w -E "$(printf ' *%s *\n' $TM )|$"
+  echo "$table" | grep --color -w -E "$(printf ' *%s *\n' $TM )|$"
 }
 
 shells(){
@@ -62,7 +62,7 @@ shells(){
   Ac Th Pa  U Np Pu Am Cm Bk Cf Es Fm Md No Lw"
   export GREP_COLORS='1;31'
 
-  echo -e "$table" \
+  echo  "$table" \
   | GREP_COLOR='1;31' grep --color=always -w -E "$(printf '%s\n' $s)|$" \
   | GREP_COLOR='1;35' grep --color=always -w -E "$(printf '%s\n' $p)|$" \
   | GREP_COLOR='1;36' grep --color=always -w -E "$(printf '%s\n' $d)|$" \
@@ -71,7 +71,7 @@ shells(){
 
 print_card()
 {
-  if grep -q -E "$(printf ' *%s *\n' "$@" )|$" <(echo $table)
+  if $(echo "$table" | grep -q -E "$(printf ' *%s *\n' "$@" )|$")
   then
     awk -F "," '{
       if (NR==1){
@@ -91,7 +91,7 @@ print_card()
 }
 
 highlight(){
-  echo -e "$table" | grep --color -w -E "$(printf ' *%s *\n' "$@" )|$"
+  echo "$table" | grep --color -w -E "$(printf ' *%s *\n' "$@" )|$"
 }
 
 case $1 in
@@ -99,5 +99,5 @@ case $1 in
   -c|-C) [ ! -z "$2" ] && print_card $2 ;;
   -tm|-TM) tm ;;
   -s|-shell) shells ;;
-  *) [ "$#" -lt 1 ] && echo -e "$table" || highlight "$@" ;;
+  *) [ "$#" -lt 1 ] && echo  "$table" || highlight "$@" ;;
 esac
