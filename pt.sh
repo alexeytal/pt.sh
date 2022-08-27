@@ -1,8 +1,13 @@
 #!/bin/sh
 
-#datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
 [ -f ./pt.csv ] && datafile="pt.csv" || datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
-export GREP_COLORS='ms=1;33;30;48;5;10'
+
+c1=$(echo "0;30;101")
+c2=$(echo "0;30;102")
+c3=$(echo "0;30;103")
+c4=$(echo "0;30;104")
+c5=$(echo "0;30;105")
+c6=$(echo "0;30;100")
 
 table="    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  
   ┌───┐                                                               ┌───┐
@@ -35,21 +40,18 @@ Positional arguments:
   element       [optional] One or multiple elements to be highlighted
 
 Options:
- -s, -shell    highlight s,p,d elements
- -tm, -TM      highlight transiton metals
- -c, -C        print detailed info on elements
+ -h, --help     print help
+ -s, --shell    highlight s,p,d, and f elements
+ -g, --group    group elements of the periodic table
+ -c, --card     print detailed info for an element
 
-The file with the data for info cards is stored in `echo $XDG_DATA_HOME/pt/table.csv`.
+The file with the data for the info cards is stored in `echo $XDG_DATA_HOME/pt/table.csv`.
 A custom path can be set in the PT_PATH variable.
 _EOF
 }
 
-tm(){
-  TM="Sc Ti  V Cr Mn Fe Co Ni Cu Zn Y Zr Nb Mo \
-  Tc Ru Rh Pd Ag Cd La Hf Ta W Re Os Ir Pt Au Hg Ac \
-  Rf Db Sg Bh Hs Mt Ds Rg Cn "
-
-  echo "$table" | grep --color -w -E "$(printf ' *%s *\n' $TM )|$"
+highlight(){
+  GREP_COLOR=$1 grep --color=always -w -E "$(printf ' *%s *\n' "$@" )|$"
 }
 
 shells(){
@@ -60,14 +62,45 @@ shells(){
   Hf Ta W Re Os Ir Pt Au Hg Rf Db Sg Bh Hs Mt Ds Rg Cn"
   f="La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu \
   Ac Th Pa  U Np Pu Am Cm Bk Cf Es Fm Md No Lw"
-  export GREP_COLORS='1;31'
 
   echo  "$table" \
-  | GREP_COLOR='1;31' grep --color=always -w -E "$(printf '%s\n' $s)|$" \
-  | GREP_COLOR='1;35' grep --color=always -w -E "$(printf '%s\n' $p)|$" \
-  | GREP_COLOR='1;36' grep --color=always -w -E "$(printf '%s\n' $d)|$" \
-  | GREP_COLOR='1;32' grep --color=always -w -E "$(printf '%s\n' $f)|$" 
+    | highlight $c1 $s \
+    | highlight $c2 $p \
+    | highlight $c3 $d \
+    | highlight $c4 $f \
+
+  printf "\033["$c1"m%18s\033[00;37m "  "s-shell"
+  printf "\033["$c2"m%18s\033[00;37m "  "p-shell"
+  printf "\033["$c3"m%18s\033[00;37m "  "d-shell"
+  printf "\033["$c4"m%18s\033[00;37m\n" "f-shell"
 }
+
+group(){
+  AK="H Li Na K Rb Cs Fr"
+  AM="Be Mg Ca Sr Ba Ra"
+  HL="F Cl Br I At Ts"
+  NB="He Ne Ar Kr Xe Rn Og"
+  TM="Sc Ti  V Cr Mn Fe Co Ni Cu Zn Y Zr Nb Mo \
+  Tc Ru Rh Pd Ag Cd La Hf Ta W Re Os Ir Pt Au Hg Ac \
+  Rf Db Sg Bh Hs Mt Ds Rg Cn"
+  SM="B Si Ge As Sb Te Po"
+
+  echo  "$table" \
+    | highlight $c1 $AK \
+    | highlight $c2 $AM \
+    | highlight $c3 $HL \
+    | highlight $c4 $NB \
+    | highlight $c5 $TM \
+    | highlight $c6 $SM 
+
+  printf "\033["$c1"m%s\033[00;37m "  "Alkali Metals"
+  printf "\033["$c2"m%s\033[00;37m "  "Alkali Earth Metals"
+  printf "\033["$c3"m%s\033[00;37m "  "Halogens"
+  printf "\033["$c4"m%s\033[00;37m "  "Noble Gases"
+  printf "\033["$c5"m%s\033[00;37m "  "Transition Metals"
+  printf "\033["$c6"m%s\033[00;37m\n" "Semimetals"
+}
+
 
 print_card()
 {
@@ -90,14 +123,10 @@ print_card()
   fi
 }
 
-highlight(){
-  echo "$table" | grep --color -w -E "$(printf ' *%s *\n' "$@" )|$"
-}
-
 case $1 in
   -h|--help) help ;;
-  -c|-C) [ ! -z "$2" ] && print_card $2 ;;
-  -tm|-TM) tm ;;
-  -s|-shell) shells ;;
-  *) [ "$#" -lt 1 ] && echo  "$table" || highlight "$@" ;;
+  -c|--card) [ ! -z "$2" ] && print_card $2 ;;
+	-g|--group) group;;
+  -s|--shells) shells ;;
+  *) [ "$#" -lt 1 ] && echo "$table" || echo "$table" | highlight "$c2" "$@" ;;
 esac
