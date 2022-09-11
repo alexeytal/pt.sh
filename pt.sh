@@ -2,12 +2,12 @@
 
 [ -f ./pt.csv ] && datafile="pt.csv" || datafile="${PT_PATH:-$XDG_DATA_HOME/pt.sh/pt.csv}"
 
-c1=$(echo "0;30;101")
-c2=$(echo "0;30;102")
-c3=$(echo "0;30;103")
-c4=$(echo "0;30;104")
-c5=$(echo "0;30;105")
-c6=$(echo "0;30;100")
+c1="0;30;101"
+c2="0;30;102"
+c3="0;30;103"
+c4="0;30;104"
+c5="0;30;105"
+c6="0;30;100"
 
 table="    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  
   ┌───┐                                                               ┌───┐
@@ -51,7 +51,7 @@ _EOF
 }
 
 highlight(){
-  GREP_COLOR=$1 grep --color=always -w -E "$(printf ' *%s *\n' "$@" )|$"
+  GREP_COLORS="mt=$1" grep --color=always -w -E "$(printf ' *%s *\n' "$@" )|$"
 }
 
 shells(){
